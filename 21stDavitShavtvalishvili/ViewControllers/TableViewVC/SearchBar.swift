@@ -15,7 +15,7 @@ extension TableVC: UISearchBarDelegate {
             countriesFiltered = countries!.filter { $0.name.contains(searchBar.text!) }
             tableView.reloadData()
         } else {
-            countriesFiltered = countries!
+            countriesFiltered = countries ?? []
             tableView.reloadData()
         }
     }
