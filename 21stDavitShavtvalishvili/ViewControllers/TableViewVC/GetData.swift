@@ -28,7 +28,6 @@ struct Country: Decodable {
     let currencies: [Currency]?
     let flag: URL
     let independent: Bool
-//    let cioc: String
 }
 
 // MARK: - Currency
