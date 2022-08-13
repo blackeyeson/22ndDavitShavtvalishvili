@@ -6,37 +6,63 @@
 //
 
 import Foundation
+import UIKit
 
-struct MoviesPage: Codable {
-    struct Movie: Codable {
-        let backdrop_path: String
-        let first_air_date: String
-        let genre_ids: [Int]
-        let id: Int
-        let name: String
-        let origin_country: String
-        let original_language: String
-        let original_name: String
-        let overview: String
-        let popularity: Double
-        let poster_path: String
-        let vote_average: Double
-        let vote_count: Int
+class NetworkService {
+    static var shared = NetworkService()
+    
+    var session = URLSession()
+    
+    init() {
+        let urlSessionConfiguration = URLSessionConfiguration.default
+        let urlSession = URLSession(configuration: urlSessionConfiguration)
+        self.session = urlSession
     }
-    let page: Int
-    var results: [Movie]
+    func getData<T: Codable>(urlString: String, comletion: @escaping (T)->(Void)) {
+        let url = URL(string: urlString)!
+        
+        session.dataTask(with: URLRequest(url: url)) { data, response, error in
+            
+            if let error = error {
+                print(error.localizedDescription)
+            }
+            
+            guard let response = response as? HTTPURLResponse else {
+                return
+            }
+            
+            guard (200...299).contains(response.statusCode) else {
+                print("wrong response")
+                return
+            }
+            
+            guard let data = data else {
+                return
+            }
+            
+            do {
+                let decoder = JSONDecoder()
+                let object = try decoder.decode(T.self, from: data)
+                
+                DispatchQueue.main.async {
+                    comletion(object)
+                }
+            } catch {
+                print("decoding error")
+            }
+        }.resume()
+    }
 }
 
-extension TableVC {
-    func getCountries<T: Codable>(urlString: String, codableStruct: T) {
-        if let url = URL(string: urlString) {
+extension DetailsVC {
+    func getDetails(id: Int) {
+        if let url = URL(string: "https://api.themoviedb.org/3/tv/\(id)?api_key=4d5c910865a5edc352e68d5a59651d23&language=en-US") {
             URLSession.shared.dataTask(with: url) { data, response, error in
                 if let data = data {
                     let jsonDecoder = JSONDecoder()
                     do {
-                        let parsedJSON = try jsonDecoder.decode(MoviesPage.self, from: data)
-                        self.moviesPage = parsedJSON
-                        self.moviesPageFiltered = parsedJSON
+                        let parsedJSON = try jsonDecoder.decode(DetailsData.self, from: data)
+                        self.details = parsedJSON
                     } catch {
                         print(error)
                     }
