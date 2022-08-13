@@ -21,6 +21,7 @@ extension TableVC: UITableViewDelegate, UITableViewDataSource {
         
         cell.index = i
         cell.delegate = self
+        cell.apiKey = self.apiKey
         
         if moviesPage != nil {
             cell.movie = moviesPageFiltered!.results[i]
@@ -38,15 +39,14 @@ extension TableVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func loadTableData() {
-        DispatchQueue.global(qos: .utility).async {
-            self.getCountries(urlString: self.urlString1, codableStruct: self.moviesPage)
+        networService.getData(urlString: self.urlString1) { (item: MoviesPage) in
+            self.moviesPage = item
+            self.moviesPageFiltered = item
             self.waitingg()
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
+            self.tableView.reloadData()
         }
     }
-    
+        
     func waitingg() {
         if moviesPage == nil { sleep(1); waitingg() }
     }

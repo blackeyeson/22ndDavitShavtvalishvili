@@ -12,6 +12,8 @@ class TableViewCell: UITableViewCell {
     var index: Int? = nil
     var delegate: TableVC? = nil
     var movie: MoviesPage.Movie? = nil
+    var apiKey: String = ""
+    
     @IBOutlet var name: UILabel!
     
     override func awakeFromNib() {
@@ -32,7 +34,9 @@ class TableViewCell: UITableViewCell {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "DetailsVC") as! DetailsVC
         vc.movie = self.movie
+        vc.getDetails(id: self.movie!.id)
+        vc.apiKey = self.apiKey
         delegate!.navigationController?.pushViewController(vc,
-                                                          animated: true)
+                                                           animated: true)
     }
 }
