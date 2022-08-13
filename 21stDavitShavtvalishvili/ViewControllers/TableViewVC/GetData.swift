@@ -7,50 +7,36 @@
 
 import Foundation
 
-// MARK: - WelcomeElement
-struct Country: Decodable {
-    let name: String
-    let topLevelDomain: [String]
-    let alpha2Code, alpha3Code: String
-    let callingCodes: [String]
-    let capital: String?
-    let altSpellings: [String]?
-    let subregion: String
-    let region: String
-    let population: Int
-    let latlng: [Double]?
-    let demonym: String
-    let area: Double?
-    let timezones: [String]
-    let borders: [String]?
-    let nativeName, numericCode: String
-    let flags: Flags
-    let currencies: [Currency]?
-    let flag: URL
-    let independent: Bool
-}
-
-// MARK: - Currency
-struct Currency: Decodable {
-    let code, name, symbol: String
-}
-
-// MARK: - Flags
-struct Flags: Decodable {
-    let svg: URL
-    let png: URL
+struct MoviesPage: Codable {
+    struct Movie: Codable {
+        let backdrop_path: String
+        let first_air_date: String
+        let genre_ids: [Int]
+        let id: Int
+        let name: String
+        let origin_country: String
+        let original_language: String
+        let original_name: String
+        let overview: String
+        let popularity: Double
+        let poster_path: String
+        let vote_average: Double
+        let vote_count: Int
+    }
+    let page: Int
+    var results: [Movie]
 }
 
 extension TableVC {
-    func getCountries() {
-        if let url = URL(string: "https://restcountries.com/v2/all") {
+    func getCountries<T: Codable>(urlString: String, codableStruct: T) {
+        if let url = URL(string: urlString) {
             URLSession.shared.dataTask(with: url) { data, response, error in
                 if let data = data {
                     let jsonDecoder = JSONDecoder()
                     do {
-                        let parsedJSON = try jsonDecoder.decode([Country].self, from: data)
-                        self.countries = parsedJSON
-                        self.countriesFiltered = parsedJSON
+                        let parsedJSON = try jsonDecoder.decode(MoviesPage.self, from: data)
+                        self.moviesPage = parsedJSON
+                        self.moviesPageFiltered = parsedJSON
                     } catch {
                         print(error)
                     }

@@ -12,7 +12,7 @@ extension TableVC: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int { 1 }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { countriesFiltered.count }
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { moviesPageFiltered?.results.count ?? 0 }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
@@ -22,8 +22,8 @@ extension TableVC: UITableViewDelegate, UITableViewDataSource {
         cell.index = i
         cell.delegate = self
         
-        if countries != nil {
-            cell.country = countriesFiltered[i]
+        if moviesPage != nil {
+            cell.movie = moviesPageFiltered!.results[i]
             cell.config()
         }
         
@@ -39,7 +39,7 @@ extension TableVC: UITableViewDelegate, UITableViewDataSource {
     
     func loadTableData() {
         DispatchQueue.global(qos: .utility).async {
-            self.getCountries()
+            self.getCountries(urlString: self.urlString1, codableStruct: self.moviesPage)
             self.waitingg()
             DispatchQueue.main.async {
                 self.tableView.reloadData()
@@ -48,6 +48,6 @@ extension TableVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func waitingg() {
-        if countries == nil { sleep(1); waitingg() }
+        if moviesPage == nil { sleep(1); waitingg() }
     }
 }

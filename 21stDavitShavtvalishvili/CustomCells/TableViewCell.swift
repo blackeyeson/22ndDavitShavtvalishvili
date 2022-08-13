@@ -11,7 +11,7 @@ class TableViewCell: UITableViewCell {
     
     var index: Int? = nil
     var delegate: TableVC? = nil
-    var country: Country? = nil
+    var movie: MoviesPage.Movie? = nil
     @IBOutlet var name: UILabel!
     
     override func awakeFromNib() {
@@ -23,7 +23,7 @@ class TableViewCell: UITableViewCell {
     }
     
     func config() {
-        name.text = country!.name
+        name.text = movie!.name
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
         self.addGestureRecognizer(tap)
     }
@@ -31,7 +31,7 @@ class TableViewCell: UITableViewCell {
     @objc func handleTap(_ sender: UITapGestureRecognizer? = nil) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "DetailsVC") as! DetailsVC
-        vc.country = self.country
+        vc.movie = self.movie
         delegate!.navigationController?.pushViewController(vc,
                                                           animated: true)
     }

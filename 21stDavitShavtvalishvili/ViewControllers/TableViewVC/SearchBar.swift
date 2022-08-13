@@ -10,12 +10,12 @@ import UIKit
 
 extension TableVC: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if searchBar.text != "" && countries != nil {
-            countriesFiltered = countries!
-            countriesFiltered = countries!.filter { $0.name.contains(searchBar.text!) }
+        if searchBar.text != "" && moviesPage != nil {
+            moviesPageFiltered = moviesPage!
+            moviesPageFiltered!.results = moviesPage!.results.filter { $0.name.contains(searchBar.text!) }
             tableView.reloadData()
         } else {
-            countriesFiltered = countries ?? []
+            moviesPageFiltered!.results = moviesPage?.results ?? []
             tableView.reloadData()
         }
     }
